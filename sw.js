@@ -1,4 +1,4 @@
-const CACHE = 'ironlog-v4';
+const CACHE = 'ironlog-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -55,17 +55,16 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // App assets: cache first, then network, fallback to index
+  // App assets: network first, fallback to cache (ensures updates arrive fast)
   e.respondWith(
-    caches.match(e.request).then(r =>
-      r || fetch(e.request).then(response => {
-        // Cache new assets dynamically
-        if (response.ok && url.origin === self.location.origin) {
-          const clone = response.clone();
-          caches.open(CACHE).then(cache => cache.put(e.request, clone));
-        }
-        return response;
-      }).catch(() => caches.match('./index.html'))
+    fetch(e.request).then(response => {
+      if (response.ok && url.origin === self.location.origin) {
+        const clone = response.clone();
+        caches.open(CACHE).then(cache => cache.put(e.request, clone));
+      }
+      return response;
+    }).catch(() =>
+      caches.match(e.request).then(r => r || caches.match('./index.html'))
     )
   );
 });
