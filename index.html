@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IRON LOG">
+<meta name="description" content="Controle de treinos de academia com IA">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="splash-1170x2532.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="splash-1125x2436.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="splash-828x1792.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="splash-750x1334.png">
+<title>IRON LOG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash" role="alert" aria-live="polite">
+  <div class="splash-icon">
+    <svg class="splash-dumbbell" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="22" width="5" height="20" rx="2" fill="#c8ff00"/>
+      <rect x="7" y="26" width="4" height="12" rx="1" fill="#c8ff00"/>
+      <rect x="11" y="20" width="7" height="24" rx="2" fill="#c8ff00"/>
+      <rect x="18" y="26" width="4" height="12" rx="1" fill="#c8ff00"/>
+      <rect x="22" y="29" width="20" height="6" rx="2" fill="#c8ff00"/>
+      <rect x="42" y="26" width="4" height="12" rx="1" fill="#c8ff00"/>
+      <rect x="46" y="20" width="7" height="24" rx="2" fill="#c8ff00"/>
+      <rect x="53" y="26" width="4" height="12" rx="1" fill="#c8ff00"/>
+      <rect x="57" y="22" width="5" height="20" rx="2" fill="#c8ff00"/>
+    </svg>
+  </div>
+  <div class="splash-name">IRON<span>LOG</span></div>
+  <div class="splash-sub">Controle de Treinos</div>
+</div>
+
+<div id="app">
+
+  <!-- ══════════ HOME ══════════ -->
+  <div class="screen active" id="s-home">
+    <div class="page-title" id="home-greeting">BOM DIA,<br>VAMOS TREINAR?</div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-val" id="st-week">0</div>
+        <div class="stat-lbl">Semana</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-val" id="st-total">0</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">⚖️</div>
+        <div class="stat-val" id="st-peso">—</div>
+        <div class="stat-lbl">Peso kg</div>
+      </div>
+    </div>
+
+    <!-- Weekly Progress Bar -->
+    <div class="week-progress" id="week-progress">
+      <div class="week-progress-header">
+        <span class="section-label" style="margin:0">Meta semanal</span>
+        <span class="week-progress-count" id="week-count">0/5 treinos</span>
+      </div>
+      <div class="week-dots" id="week-dots"></div>
+    </div>
+
+    <div class="section-label" style="margin-top:20px;">Ação rápida</div>
+    <div class="action-grid">
+      <button class="action-card action-card--primary" onclick="openSheet('sheet-ai')">
+        <span class="action-card-icon">🤖</span>
+        <span class="action-card-label">Montar treino<br>com IA</span>
+      </button>
+      <button class="action-card" onclick="openSheet('sheet-new-session')">
+        <span class="action-card-icon">⚡</span>
+        <span class="action-card-label">Registrar<br>treino agora</span>
+      </button>
+    </div>
+
+    <div class="section-label" style="margin-top:24px;">Últimos treinos</div>
+    <div id="home-hist"></div>
+  </div>
+
+  <!-- ══════════ TREINAR ══════════ -->
+  <div class="screen" id="s-treinar">
+    <div class="page-title">TREINAR</div>
+    <div class="action-grid" style="margin-bottom:20px;">
+      <button class="action-card action-card--primary" onclick="openSheet('sheet-ai')">
+        <span class="action-card-icon">🤖</span>
+        <span class="action-card-label">Plano semanal<br>com IA</span>
+      </button>
+      <button class="action-card" onclick="openSheet('sheet-new-session')">
+        <span class="action-card-icon">📋</span>
+        <span class="action-card-label">Usar plano<br>existente</span>
+      </button>
+    </div>
+    <div class="section-label">Meus planos</div>
+    <div id="treinar-plans"></div>
+    <div style="height:10px"></div>
+    <button class="btn btn-ghost" onclick="showScreen('s-planos')">+ Criar novo plano</button>
+  </div>
+
+  <!-- ══════════ PLANOS ══════════ -->
+  <div class="screen" id="s-planos">
+    <div class="screen-header">
+      <div class="page-title" style="margin:0">PLANOS</div>
+      <button class="btn btn-primary btn-sm" onclick="openSheet('sheet-plan-edit', null)">+ Novo</button>
+    </div>
+    <div id="planos-list"></div>
+  </div>
+
+  <!-- ══════════ HISTÓRICO ══════════ -->
+  <div class="screen" id="s-hist">
+    <div class="page-title">HISTÓRICO</div>
+    <div class="field">
+      <select id="hist-filter" onchange="renderHist()" aria-label="Filtrar por plano">
+        <option value="">Todos os treinos</option>
+      </select>
+    </div>
+    <div id="hist-list"></div>
+  </div>
+
+  <!-- ══════════ DESEMPENHO / MEDIDAS ══════════ -->
+  <div class="screen" id="s-peso">
+    <div class="page-title">DESEMPENHO</div>
+
+    <div class="card glass-card">
+      <div class="section-label">Registrar Medidas</div>
+      <div class="field"><label class="lbl">Data</label><input type="date" id="w-date"></div>
+      <div class="row2">
+        <div class="field" style="margin:0 0 10px"><label class="lbl">Peso (kg)</label><input type="number" id="m-peso" step="0.1" placeholder="75.5" inputmode="decimal"></div>
+        <div class="field" style="margin:0 0 10px"><label class="lbl">Cintura (cm)</label><input type="number" id="m-cintura" step="0.1" placeholder="80" inputmode="decimal"></div>
+        <div class="field" style="margin:0 0 10px"><label class="lbl">Abdômen (cm)</label><input type="number" id="m-abdomen" step="0.1" placeholder="85" inputmode="decimal"></div>
+        <div class="field" style="margin:0 0 10px"><label class="lbl">Quadril (cm)</label><input type="number" id="m-quadril" step="0.1" placeholder="95" inputmode="decimal"></div>
+        <div class="field" style="margin:0 0 10px"><label class="lbl">Coxa (cm)</label><input type="number" id="m-coxa" step="0.1" placeholder="58" inputmode="decimal"></div>
+        <div class="field" style="margin:0 0 10px"><label class="lbl">Braço (cm)</label><input type="number" id="m-braco" step="0.1" placeholder="38" inputmode="decimal"></div>
+        <div class="field" style="margin:0 0 10px"><label class="lbl">Antebraço (cm)</label><input type="number" id="m-antebraco" step="0.1" placeholder="30" inputmode="decimal"></div>
+        <div class="field" style="margin:0 0 10px"><label class="lbl">Peitoral (cm)</label><input type="number" id="m-peito" step="0.1" placeholder="100" inputmode="decimal"></div>
+        <div class="field" style="margin:0 0 10px"><label class="lbl">Panturrilha (cm)</label><input type="number" id="m-panturrilha" step="0.1" placeholder="38" inputmode="decimal"></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:4px;" onclick="saveMedidas()">Salvar Medidas</button>
+    </div>
+
+    <div class="card glass-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="section-label" style="margin:0;">Evolução</div>
+        <select id="chart-metric" onchange="renderPeso()" style="width:auto;padding:6px 10px;font-size:12px;" aria-label="Métrica do gráfico">
+          <option value="peso">Peso</option>
+          <option value="cintura">Cintura</option>
+          <option value="abdomen">Abdômen</option>
+          <option value="quadril">Quadril</option>
+          <option value="coxa">Coxa</option>
+          <option value="braco">Braço</option>
+          <option value="antebraco">Antebraço</option>
+          <option value="peito">Peitoral</option>
+          <option value="panturrilha">Panturrilha</option>
+        </select>
+      </div>
+      <div style="height:180px;position:relative;"><canvas id="w-canvas"></canvas></div>
+    </div>
+
+    <div class="card glass-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div class="section-label" style="margin:0;">Histórico</div>
+        <div class="data-actions">
+          <button class="btn btn-ghost btn-sm btn-icon-text" onclick="exportData()" aria-label="Exportar dados">📤 Exportar</button>
+          <label class="btn btn-ghost btn-sm btn-icon-text" aria-label="Importar dados">📥 Importar<input type="file" accept=".json" onchange="importData(event)" hidden></label>
+        </div>
+      </div>
+      <div id="w-log"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ BOTTOM NAV ═══ -->
+<nav role="navigation" aria-label="Menu principal">
+  <button class="active" onclick="showScreen('s-home')" id="nav-home" aria-label="Início">
+    <span class="icon">🏠</span><span class="label">Início</span>
+  </button>
+  <button onclick="showScreen('s-treinar')" id="nav-treinar" aria-label="Treinar">
+    <span class="icon">💪</span><span class="label">Treinar</span>
+  </button>
+  <button onclick="showScreen('s-planos')" id="nav-planos" aria-label="Planos">
+    <span class="icon">📋</span><span class="label">Planos</span>
+  </button>
+  <button onclick="showScreen('s-hist')" id="nav-hist" aria-label="Histórico">
+    <span class="icon">📈</span><span class="label">Histórico</span>
+  </button>
+  <button onclick="showScreen('s-peso')" id="nav-peso" aria-label="Medidas">
+    <span class="icon">📏</span><span class="label">Medidas</span>
+  </button>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ═══ SHEET: IA TREINADOR (novo: formulário + plano semanal) ═══ -->
+<div class="overlay" id="sheet-ai" onclick="overlayClick(event,'sheet-ai')" role="dialog" aria-label="Treinador IA">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title">🤖 PLANO SEMANAL IA</span>
+      <button class="btn btn-icon btn-sm" onclick="closeSheet('sheet-ai')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="sheet-body" id="ai-sheet-body">
+      <!-- API Key setup -->
+      <div id="ai-key-setup" style="display:none;">
+        <div class="card glass-card">
+          <div class="section-label" style="margin-bottom:8px;">Chave de API</div>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Cole sua API Key da Anthropic para usar o treinador IA.</p>
+          <div class="field"><input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off"></div>
+          <button class="btn btn-primary" onclick="saveApiKey()">Salvar e Começar</button>
+        </div>
+      </div>
+
+      <!-- Formulário IA -->
+      <div id="ai-form">
+        <p class="ai-intro">Preencha os dados abaixo e a IA vai montar seu <strong>plano semanal completo</strong>, pronto para usar o mês todo.</p>
+
+        <div class="field">
+          <label class="lbl">Objetivo</label>
+          <div class="chips" id="ai-objetivo">
+            <button class="chip selected" data-val="hipertrofia" onclick="selectChip(this)">💪 Hipertrofia</button>
+            <button class="chip" data-val="forca" onclick="selectChip(this)">🏋️ Força</button>
+            <button class="chip" data-val="resistencia" onclick="selectChip(this)">🫀 Resistência</button>
+            <button class="chip" data-val="emagrecimento" onclick="selectChip(this)">🔥 Emagrecimento</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="lbl">Nível de experiência</label>
+          <div class="chips" id="ai-nivel">
+            <button class="chip" data-val="iniciante" onclick="selectChip(this)">🌱 Iniciante</button>
+            <button class="chip selected" data-val="intermediario" onclick="selectChip(this)">⚡ Intermediário</button>
+            <button class="chip" data-val="avancado" onclick="selectChip(this)">🔥 Avançado</button>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label class="lbl">Dias por semana</label>
+            <select id="ai-dias">
+              <option value="3">3 dias</option>
+              <option value="4">4 dias</option>
+              <option value="5" selected>5 dias</option>
+              <option value="6">6 dias</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">Tempo por treino</label>
+            <select id="ai-tempo">
+              <option value="30">30 min</option>
+              <option value="45">45 min</option>
+              <option value="60" selected>60 min</option>
+              <option value="90">90 min</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="lbl">Equipamentos disponíveis</label>
+          <div class="chips multi" id="ai-equip">
+            <button class="chip selected" data-val="halter" onclick="toggleChip(this)">Halter</button>
+            <button class="chip selected" data-val="barra" onclick="toggleChip(this)">Barra</button>
+            <button class="chip selected" data-val="maquinas" onclick="toggleChip(this)">Máquinas</button>
+            <button class="chip selected" data-val="smith" onclick="toggleChip(this)">Smith</button>
+            <button class="chip selected" data-val="cabos" onclick="toggleChip(this)">Cabos</button>
+            <button class="chip" data-val="kettlebell" onclick="toggleChip(this)">Kettlebell</button>
+            <button class="chip" data-val="corporal" onclick="toggleChip(this)">Peso Corporal</button>
+            <button class="chip" data-val="elastico" onclick="toggleChip(this)">Elásticos</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="lbl">Observações (opcional)</label>
+          <textarea id="ai-obs" rows="2" placeholder="Ex: tenho lesão no ombro, prefiro supino inclinado..."></textarea>
+        </div>
+
+        <button class="btn btn-primary btn-glow" id="ai-generate-btn" onclick="generateWeeklyPlan()">
+          <span id="ai-btn-text">🤖 Gerar Plano Semanal</span>
+          <span id="ai-btn-loading" style="display:none;">
+            <span class="spinner"></span> Gerando plano...
+          </span>
+        </button>
+      </div>
+
+      <!-- Resultado do plano -->
+      <div id="ai-result" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SHEET: NOVA SESSÃO ═══ -->
+<div class="overlay" id="sheet-new-session" onclick="overlayClick(event,'sheet-new-session')" role="dialog" aria-label="Registrar treino">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title">REGISTRAR</span>
+      <button class="btn btn-icon btn-sm" onclick="confirmCloseSession()" aria-label="Fechar">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="field"><label class="lbl">Data</label><input type="date" id="sess-date"></div>
+      <div class="field">
+        <label class="lbl">Plano</label>
+        <select id="sess-plan" onchange="loadSessPlan()" aria-label="Selecionar plano">
+          <option value="">Selecione...</option>
+        </select>
+      </div>
+      <div class="field"><label class="lbl">Observações</label><input type="text" id="sess-notes" placeholder="Como foi o treino..."></div>
+      <hr>
+      <div id="sess-exercises"></div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn btn-primary" onclick="saveSession()">💾 Salvar Treino</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SHEET: VER SESSÃO ═══ -->
+<div class="overlay" id="sheet-view-session" onclick="overlayClick(event,'sheet-view-session')" role="dialog" aria-label="Detalhes do treino">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title" id="view-sess-title">TREINO</span>
+      <button class="btn btn-icon btn-sm" onclick="closeSheet('sheet-view-session')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="sheet-body" id="view-sess-body"></div>
+    <div class="sheet-footer">
+      <button class="btn btn-danger" id="view-sess-del" aria-label="Excluir treino">🗑 Excluir treino</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SHEET: EDITAR / CRIAR PLANO ═══ -->
+<div class="overlay" id="sheet-plan-edit" onclick="overlayClick(event,'sheet-plan-edit')" role="dialog" aria-label="Editar plano">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title" id="plan-edit-title">NOVO PLANO</span>
+      <button class="btn btn-icon btn-sm" onclick="closeSheet('sheet-plan-edit')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="field"><label class="lbl">Nome do plano</label><input type="text" id="pe-name" placeholder="Ex: Peito e Tríceps"></div>
+      <div class="field">
+        <label class="lbl">Grupo muscular</label>
+        <select id="pe-group">
+          <option value="A">A — Peito</option>
+          <option value="B">B — Costas</option>
+          <option value="C">C — Pernas</option>
+          <option value="D">D — Ombros</option>
+          <option value="E">E — Braços</option>
+          <option value="F">F — Core / Abdômen</option>
+          <option value="G">G — Full Body</option>
+        </select>
+      </div>
+      <hr>
+      <div class="section-label">Exercícios</div>
+      <div id="pe-ex-list"></div>
+      <button class="btn btn-ghost btn-sm" style="width:auto;margin-top:6px;" onclick="peAddRow()">+ Exercício</button>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn btn-primary" onclick="savePlan()">Salvar Plano</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SHEET: INSTALAR APP ═══ -->
+<div class="overlay" id="sheet-install" onclick="overlayClick(event,'sheet-install')" role="dialog" aria-label="Instalar app">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title">📲 INSTALAR APP</span>
+      <button class="btn btn-icon btn-sm" onclick="closeSheet('sheet-install')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="sheet-body">
+      <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Instale o IRON LOG na tela inicial — funciona offline e abre rápido!</p>
+      <div id="android-native-btn" style="display:none;margin-bottom:20px;">
+        <button class="btn btn-primary" onclick="triggerInstall()">⬇️ Instalar agora</button>
+      </div>
+      <div id="android-manual">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <span style="font-size:24px;">🤖</span>
+          <span class="sheet-title" style="font-size:22px;">Android (Chrome)</span>
+        </div>
+        <div class="install-steps">
+          <div class="install-step"><div class="step-num">1</div><div>Toque nos <strong>três pontos ⋮</strong> no canto superior direito</div></div>
+          <div class="install-step"><div class="step-num">2</div><div>Toque em <strong>"Adicionar à tela inicial"</strong></div></div>
+          <div class="install-step"><div class="step-num">3</div><div>Confirme tocando em <strong>"Adicionar"</strong></div></div>
+        </div>
+      </div>
+      <hr>
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <span style="font-size:24px;">🍎</span>
+          <span class="sheet-title" style="font-size:22px;">iPhone / iPad</span>
+        </div>
+        <div class="install-steps ios">
+          <div class="install-step"><div class="step-num blue">1</div><div>Toque no ícone <strong>Compartilhar ⬆️</strong> no Safari</div></div>
+          <div class="install-step"><div class="step-num blue">2</div><div>Role e toque em <strong>"Adicionar à Tela Inicial"</strong></div></div>
+          <div class="install-step"><div class="step-num blue">3</div><div>Toque em <strong>"Adicionar"</strong></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn btn-ghost" onclick="closeSheet('sheet-install')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REST TIMER ═══ -->
+<div id="timer-overlay" role="dialog" aria-label="Timer de descanso">
+  <div class="timer-label">DESCANSO</div>
+  <div class="timer-ring">
+    <svg width="200" height="200" viewBox="0 0 200 200">
+      <circle class="ring-bg" cx="100" cy="100" r="90"/>
+      <circle class="ring-progress" id="timer-ring-path" cx="100" cy="100" r="90"
+        stroke-dasharray="565.5" stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-val" id="timer-val">60</div>
+  </div>
+  <div class="timer-exercise" id="timer-exercise"></div>
+  <div class="timer-btns">
+    <button class="timer-preset" onclick="setTimer(30)">30s</button>
+    <button class="timer-preset" onclick="setTimer(60)">60s</button>
+    <button class="timer-preset" onclick="setTimer(90)">90s</button>
+    <button class="timer-preset" onclick="setTimer(120)">2min</button>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:12px;">
+    <button class="btn btn-ghost btn-sm" style="width:auto;" onclick="skipTimer()" aria-label="Pular timer">Pular ⏭</button>
+    <button class="btn btn-primary btn-sm" style="width:auto;" id="timer-pause-btn" onclick="pauseTimer()" aria-label="Pausar timer">⏸ Pausar</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
