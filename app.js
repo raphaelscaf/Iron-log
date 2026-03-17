@@ -772,7 +772,7 @@ async function generateWeeklyPlan() {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
+        max_tokens: 4096,
         system: prompt.system,
         messages: [{ role: 'user', content: prompt.user }]
       })
@@ -799,13 +799,15 @@ async function generateWeeklyPlan() {
       renderTreinar();
       renderPlanos();
     } else {
+      console.error('AI reply (no plan extracted):', rawReply);
       toast('Não foi possível extrair o plano. Tente novamente.');
       btn.disabled = false;
       btnText.style.display = '';
       btnLoading.style.display = 'none';
     }
   } catch (e) {
-    toast('Erro de conexão. Verifique a API Key.');
+    console.error('AI error:', e);
+    toast('Erro de conexão: ' + (e.message || 'Verifique a API Key.'));
     btn.disabled = false;
     btnText.style.display = '';
     btnLoading.style.display = 'none';
