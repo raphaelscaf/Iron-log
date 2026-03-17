@@ -672,7 +672,7 @@ function getChipValues(containerId) {
 }
 
 function buildWeeklyPrompt() {
-  const objetivo = getChipValue('ai-objetivo');
+  const objetivos = getChipValues('ai-objetivo');
   const nivel = getChipValue('ai-nivel');
   const dias = document.getElementById('ai-dias').value;
   const tempo = document.getElementById('ai-tempo').value;
@@ -688,7 +688,8 @@ function buildWeeklyPrompt() {
     hipertrofia: 'Hipertrofia (ganho de massa muscular)',
     forca: 'Força máxima',
     resistencia: 'Resistência muscular e cardiovascular',
-    emagrecimento: 'Emagrecimento e definição'
+    emagrecimento: 'Emagrecimento e definição',
+    readaptacao: 'Readaptação (retorno ao treino após período parado, foco em recondicionar o corpo progressivamente)'
   };
 
   const nivelMap = {
@@ -697,14 +698,17 @@ function buildWeeklyPrompt() {
     avancado: 'Avançado (2+ anos de treino consistente)'
   };
 
+  const objetivosTexto = objetivos.map(o => objetivoMap[o] || o).join(' + ');
+
   return {
     system: `Você é um personal trainer profissional certificado. Responda SEMPRE em português brasileiro.
 
 TAREFA: Criar um plano de treino SEMANAL COMPLETO com ${dias} dias de treino.
 
 PERFIL DO ALUNO:
-- Objetivo: ${objetivoMap[objetivo] || objetivo}
+- Objetivo(s): ${objetivosTexto || 'Hipertrofia'}
 - Nível: ${nivelMap[nivel] || nivel}
+${objetivos.includes('readaptacao') ? '- ATENÇÃO READAPTAÇÃO: O aluno está voltando a treinar após um período parado. Priorize cargas leves a moderadas, progressão gradual, exercícios com boa base técnica e menor risco de lesão. Inclua aquecimento e mobilidade. Nas primeiras semanas, foque em adaptação neuromuscular antes de aumentar volume/intensidade.' : ''}
 - Dias por semana: ${dias}
 - Tempo por treino: ${tempo} minutos
 - Equipamentos: ${equipamentos.join(', ') || 'academia completa'}
@@ -742,7 +746,7 @@ IMPORTANTE: No FINAL da resposta, inclua este bloco JSON numa linha só:
 Grupos: A=Peito, B=Costas, C=Pernas, D=Ombros, E=Braços, F=Core, G=Full Body
 
 O array deve ter exatamente ${dias} objetos (um por dia de treino).`,
-    user: `Crie meu plano semanal de ${dias} dias focado em ${objetivoMap[objetivo] || objetivo}. Nível ${nivelMap[nivel] || nivel}. Equipamentos: ${equipamentos.join(', ')}. Tempo: ${tempo}min por treino.${obs ? ' Obs: ' + obs : ''}`
+    user: `Crie meu plano semanal de ${dias} dias focado em ${objetivosTexto || 'Hipertrofia'}. Nível ${nivelMap[nivel] || nivel}. Equipamentos: ${equipamentos.join(', ')}. Tempo: ${tempo}min por treino.${obs ? ' Obs: ' + obs : ''}`
   };
 }
 

@@ -228,11 +228,12 @@
 
         <div class="field">
           <label class="lbl">Objetivo</label>
-          <div class="chips" id="ai-objetivo">
-            <button class="chip selected" data-val="hipertrofia" onclick="selectChip(this)">💪 Hipertrofia</button>
-            <button class="chip" data-val="forca" onclick="selectChip(this)">🏋️ Força</button>
-            <button class="chip" data-val="resistencia" onclick="selectChip(this)">🫀 Resistência</button>
-            <button class="chip" data-val="emagrecimento" onclick="selectChip(this)">🔥 Emagrecimento</button>
+          <div class="chips multi" id="ai-objetivo">
+            <button class="chip selected" data-val="hipertrofia" onclick="toggleChip(this)">💪 Hipertrofia</button>
+            <button class="chip" data-val="forca" onclick="toggleChip(this)">🏋️ Força</button>
+            <button class="chip" data-val="resistencia" onclick="toggleChip(this)">🫀 Resistência</button>
+            <button class="chip" data-val="emagrecimento" onclick="toggleChip(this)">🔥 Emagrecimento</button>
+            <button class="chip" data-val="readaptacao" onclick="toggleChip(this)">🔄 Readaptação</button>
           </div>
         </div>
 
