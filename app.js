@@ -774,6 +774,7 @@ EQUIPAMENTOS - ENTENDA A DIFERENÇA:
 - "bicicleta": bicicleta ergométrica (spinning, cardio moderado)
 - "eliptico": elíptico/transport elíptico (cardio de baixo impacto)
 - "transport": transport/escada (cardio intenso, simulador de escada)
+- "remo": remo ergométrico (cardio full body, trabalha costas, pernas e core simultaneamente)
 
 REGRAS:
 1. Distribua os grupos musculares de forma inteligente ao longo da semana
