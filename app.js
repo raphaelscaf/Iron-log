@@ -839,6 +839,11 @@ async function generateWeeklyPlan() {
     const cleanText = cleanWeekReply(rawReply);
 
     if (weekData && weekData.length > 0) {
+      // Check if user wants to replace existing plans
+      const replaceToggle = document.getElementById('ai-replace');
+      if (replaceToggle && replaceToggle.checked) {
+        DB.plans = [];
+      }
       const createdPlans = weekData.map(day => autoCreatePlan(day));
       showAiResult(cleanText, createdPlans);
       renderHome();

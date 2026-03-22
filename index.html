@@ -286,6 +286,18 @@
           <textarea id="ai-obs" rows="2" placeholder="Ex: tenho lesão no ombro, prefiro supino inclinado..."></textarea>
         </div>
 
+        <div class="field" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);">
+          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+            <input type="checkbox" id="ai-replace" checked style="opacity:0;width:0;height:0;position:absolute;">
+            <span style="position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:12px;transition:0.3s;"></span>
+            <span id="ai-replace-knob" style="position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:0.3s;"></span>
+          </label>
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text);">Substituir planos atuais</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">Remove os planos da semana anterior antes de criar os novos</div>
+          </div>
+        </div>
+
         <button class="btn btn-primary btn-glow" id="ai-generate-btn" onclick="generateWeeklyPlan()">
           <span id="ai-btn-text">🤖 Gerar Plano Semanal</span>
           <span id="ai-btn-loading" style="display:none;">
