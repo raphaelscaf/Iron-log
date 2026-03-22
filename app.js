@@ -770,16 +770,21 @@ EQUIPAMENTOS - ENTENDA A DIFERENÇA:
 - "kettlebell": kettlebells
 - "corporal": exercícios com peso corporal (flexão, barra fixa, dip etc)
 - "elastico": faixas elásticas/rubber bands
+- "esteira": esteira ergométrica (caminhada, corrida, HIIT)
+- "bicicleta": bicicleta ergométrica (spinning, cardio moderado)
+- "eliptico": elíptico/transport elíptico (cardio de baixo impacto)
+- "transport": transport/escada (cardio intenso, simulador de escada)
 
 REGRAS:
 1. Distribua os grupos musculares de forma inteligente ao longo da semana
 2. Use nomes de exercícios em português
-3. Cada treino deve ter 4-7 exercícios adequados ao nível e equipamentos
+3. Cada treino deve ter 4-7 exercícios de musculação adequados ao nível e equipamentos
 4. USE APENAS os equipamentos que o aluno marcou como disponíveis
 5. Séries: 2-5 | Reps: 6-20 (adequar ao objetivo)
 6. Para cada exercício inclua uma dica técnica CURTA (1 frase)
 7. Nome cada dia de forma descritiva (ex: "Peito e Tríceps", "Pernas Completo")
 8. Inclua um breve resumo de como usar o plano ao longo do mês
+9. Se o aluno tiver equipamentos de cardio (esteira, bicicleta, elíptico, transport), INCLUA cardio no plano: aquecimento de 5-10 min pré-treino e/ou sessão cardio de 15-30 min ao final de alguns dias. Adapte a intensidade ao objetivo (HIIT para emagrecimento, LISS para hipertrofia/recuperação)
 
 FORMATO DE RESPOSTA:
 Primeiro, dê uma breve análise do histórico do aluno (se disponível) e como o novo plano evolui a partir dele.
