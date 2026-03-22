@@ -671,6 +671,41 @@ function getChipValues(containerId) {
   return Array.from(document.querySelectorAll(`#${containerId} .chip.selected`)).map(c => c.dataset.val);
 }
 
+function buildTrainingHistory() {
+  const sessions = [...DB.sessions].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 15);
+  if (!sessions.length) return '';
+
+  let ctx = '\n\nHISTÓRICO DE TREINOS RECENTES DO ALUNO (use para personalizar o próximo plano):';
+  sessions.forEach(s => {
+    const plan = DB.plans.find(p => p.id === s.planId);
+    const planName = plan ? plan.name : (s.planName || 'Treino');
+    ctx += `\n- ${s.date} | ${planName}`;
+    s.exercises.forEach(ex => {
+      const doneSets = ex.sets.filter(st => st.done);
+      if (doneSets.length) {
+        const maxWeight = Math.max(...doneSets.map(st => st.weight || 0));
+        const avgReps = Math.round(doneSets.reduce((sum, st) => sum + (st.reps || 0), 0) / doneSets.length);
+        ctx += ` | ${ex.name}: ${maxWeight}kg×${avgReps}rep`;
+      }
+    });
+    if (s.notes) ctx += ` | OBS: "${s.notes}"`;
+  });
+
+  // Add body measurements if available
+  const medidas = [...DB.medidas].sort((a, b) => b.date.localeCompare(a.date));
+  if (medidas.length) {
+    const last = medidas[0];
+    ctx += '\n\nÚLTIMAS MEDIDAS CORPORAIS:';
+    if (last.peso) ctx += ` Peso: ${last.peso}kg`;
+    if (last.braco) ctx += ` | Braço: ${last.braco}cm`;
+    if (last.peito) ctx += ` | Peito: ${last.peito}cm`;
+    if (last.coxa) ctx += ` | Coxa: ${last.coxa}cm`;
+    if (last.cintura) ctx += ` | Cintura: ${last.cintura}cm`;
+  }
+
+  return ctx;
+}
+
 function buildWeeklyPrompt() {
   const objetivos = getChipValues('ai-objetivo');
   const nivel = getChipValue('ai-nivel');
@@ -683,6 +718,8 @@ function buildWeeklyPrompt() {
   const plansCtx = plans.length
     ? '\nPlanos já salvos (evite duplicar): ' + plans.map(p => `"${p.name}"`).join(', ')
     : '';
+
+  const historyCtx = buildTrainingHistory();
 
   const objetivoMap = {
     hipertrofia: 'Hipertrofia (ganho de massa muscular)',
@@ -714,6 +751,15 @@ ${objetivos.includes('readaptacao') ? '- ATENÇÃO READAPTAÇÃO: O aluno está 
 - Equipamentos: ${equipamentos.join(', ') || 'academia completa'}
 ${obs ? `- Observações: ${obs}` : ''}
 ${plansCtx}
+${historyCtx}
+
+INSTRUÇÕES SOBRE O HISTÓRICO:
+- Analise as cargas usadas nos treinos anteriores para sugerir progressão adequada
+- Leia as OBSERVAÇÕES que o aluno deixou em treinos passados (dores, dificuldades, preferências)
+- Se o aluno relatou dor ou desconforto em algum exercício, evite ou substitua por alternativas
+- Proponha progressão de carga baseada no que o aluno já levantou (aumento de 5-10%)
+- Varie exercícios para evitar estagnação, mas mantenha os compostos principais
+- Use as medidas corporais para contextualizar recomendações (ex: se cintura aumentou, enfatizar déficit)
 
 EQUIPAMENTOS - ENTENDA A DIFERENÇA:
 - "halter": halteres/dumbbell (pesos livres individuais)
@@ -729,16 +775,16 @@ REGRAS:
 1. Distribua os grupos musculares de forma inteligente ao longo da semana
 2. Use nomes de exercícios em português
 3. Cada treino deve ter 4-7 exercícios adequados ao nível e equipamentos
-4. USE APENAS os equipamentos que o aluno marcou como disponíveis - não sugira exercícios com equipamentos que ele não tem
-4. Séries: 2-5 | Reps: 6-20 (adequar ao objetivo)
-5. Para cada exercício inclua uma dica técnica CURTA (1 frase)
-6. Nome cada dia de forma descritiva (ex: "Peito e Tríceps", "Pernas Completo")
-7. Inclua um breve resumo de como usar o plano ao longo do mês
+4. USE APENAS os equipamentos que o aluno marcou como disponíveis
+5. Séries: 2-5 | Reps: 6-20 (adequar ao objetivo)
+6. Para cada exercício inclua uma dica técnica CURTA (1 frase)
+7. Nome cada dia de forma descritiva (ex: "Peito e Tríceps", "Pernas Completo")
+8. Inclua um breve resumo de como usar o plano ao longo do mês
 
 FORMATO DE RESPOSTA:
-Primeiro, dê uma breve explicação do plano (máx 3 frases).
+Primeiro, dê uma breve análise do histórico do aluno (se disponível) e como o novo plano evolui a partir dele.
 Depois, para cada dia, liste os exercícios com suas dicas.
-No final, inclua orientações de como progredir ao longo do mês (ex: aumento de carga, volume).
+No final, inclua orientações de progressão ao longo do mês.
 
 IMPORTANTE: No FINAL da resposta, inclua este bloco JSON numa linha só:
 %%SEMANA%%[{"dia":"Dia 1","nome":"Nome do Treino","grupo":"A","exercicios":[{"nome":"Exercício","series":3,"reps":12,"dica":"Dica técnica curta"}]}]%%FIM%%
@@ -746,7 +792,7 @@ IMPORTANTE: No FINAL da resposta, inclua este bloco JSON numa linha só:
 Grupos: A=Peito, B=Costas, C=Pernas, D=Ombros, E=Braços, F=Core, G=Full Body
 
 O array deve ter exatamente ${dias} objetos (um por dia de treino).`,
-    user: `Crie meu plano semanal de ${dias} dias focado em ${objetivosTexto || 'Hipertrofia'}. Nível ${nivelMap[nivel] || nivel}. Equipamentos: ${equipamentos.join(', ')}. Tempo: ${tempo}min por treino.${obs ? ' Obs: ' + obs : ''}`
+    user: `Crie meu plano semanal de ${dias} dias focado em ${objetivosTexto || 'Hipertrofia'}. Nível ${nivelMap[nivel] || nivel}. Equipamentos: ${equipamentos.join(', ')}. Tempo: ${tempo}min por treino.${obs ? ' Obs: ' + obs : ''}${historyCtx ? ' Analise meu histórico de treinos e observações para montar o melhor plano da próxima semana.' : ''}`
   };
 }
 
