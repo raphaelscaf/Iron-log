@@ -192,13 +192,22 @@ function loadSessPlan() {
     const prevEx = prevSession?.exercises?.find(e => e.name === ex.name);
     const prevLabel = prevEx?.sets?.[0]?.weight
       ? `<span class="set-card-prev">Anterior: ${prevEx.sets[0].weight}kg</span>` : '';
+    const pesoSug = ex.pesoSugerido
+      ? `<span class="set-card-peso-sug">Sugerido: ${esc(ex.pesoSugerido)}</span>` : '';
+    const dicaHtml = ex.dica
+      ? `<div class="set-card-dica">💡 ${esc(ex.dica)}</div>` : '';
+    const ytQuery = encodeURIComponent('como fazer ' + ex.name + ' exercício academia');
+    const ytBtn = `<a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" rel="noopener" class="btn-yt" title="Ver exercício no YouTube">▶</a>`;
 
     return `<div class="set-card">
       <div class="set-card-header">
         <span class="set-card-name">${esc(ex.name)}</span>
+        ${ytBtn}
         ${prevLabel}
+        ${pesoSug}
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-left:auto;">${ex.sets}×${ex.reps}</span>
       </div>
+      ${dicaHtml}
       <div id="sets-${ex.id}">
         ${Array.from({ length: ex.sets }, (_, i) => {
           const prevSet = prevEx?.sets?.[i];
@@ -347,7 +356,20 @@ function renderPlanos() {
         <span class="plan-card-chevron" id="chev-${p.id}">›</span>
       </div>
       <div class="plan-card-body" id="pcb-${p.id}">
-        ${p.exercises.map(e => `<div class="ex-item"><span class="ex-item-name">${esc(e.name)}</span><span class="ex-item-meta">${e.sets}×${e.reps}</span></div>`).join('')}
+        ${p.exercises.map(e => {
+          const ytQ = encodeURIComponent('como fazer ' + e.name + ' exercício academia');
+          const pesoTag = e.pesoSugerido ? `<span class="ex-item-peso">${esc(e.pesoSugerido)}</span>` : '';
+          const dicaTag = e.dica ? `<div class="ex-item-dica">💡 ${esc(e.dica)}</div>` : '';
+          return `<div class="ex-item">
+            <div class="ex-item-top">
+              <span class="ex-item-name">${esc(e.name)}</span>
+              <a href="https://www.youtube.com/results?search_query=${ytQ}" target="_blank" rel="noopener" class="btn-yt" title="Ver no YouTube">▶</a>
+              ${pesoTag}
+              <span class="ex-item-meta">${e.sets}×${e.reps}</span>
+            </div>
+            ${dicaTag}
+          </div>`;
+        }).join('')}
         <div style="display:flex;gap:8px;margin-top:14px;">
           <button class="btn btn-ghost btn-sm" onclick="openSheet('sheet-plan-edit','${p.id}')">✏️ Editar</button>
           <button class="btn btn-danger btn-sm" onclick="deletePlan('${p.id}')">🗑</button>
@@ -779,13 +801,15 @@ EQUIPAMENTOS - ENTENDA A DIFERENÇA:
 REGRAS:
 1. Distribua os grupos musculares de forma inteligente ao longo da semana
 2. Use nomes de exercícios em português
-3. Cada treino deve ter 4-7 exercícios de musculação adequados ao nível e equipamentos
+3. Cada treino deve ter 4-7 exercícios adequados ao nível e equipamentos
 4. USE APENAS os equipamentos que o aluno marcou como disponíveis
-5. Séries: 2-5 | Reps: 6-20 (adequar ao objetivo)
-6. Para cada exercício inclua uma dica técnica CURTA (1 frase)
+5. Séries: 2-5 | Reps: 6-20 (adequar ao objetivo). Para cardio use séries=1 e reps=tempo em minutos (ex: reps=10 para 10 min)
+6. Para cada exercício inclua uma dica técnica CURTA (1 frase) focada na execução correta: qual músculo ativar, amplitude do movimento, postura, respiração, erros comuns a evitar
 7. Nome cada dia de forma descritiva (ex: "Peito e Tríceps", "Pernas Completo")
 8. Inclua um breve resumo de como usar o plano ao longo do mês
-9. Se o aluno tiver equipamentos de cardio (esteira, bicicleta, elíptico, transport), INCLUA cardio no plano: aquecimento de 5-10 min pré-treino e/ou sessão cardio de 15-30 min ao final de alguns dias. Adapte a intensidade ao objetivo (HIIT para emagrecimento, LISS para hipertrofia/recuperação)
+9. Se o aluno tiver equipamentos de cardio (esteira, bicicleta, elíptico, transport, remo), INCLUA exercícios de cardio DENTRO da lista de exercícios do JSON (não apenas no texto). Exemplos: "Aquecimento na Esteira", "HIIT na Bicicleta", "Cardio Leve no Elíptico". Coloque aquecimento no início e cardio ao final do treino quando aplicável. Adapte a intensidade ao objetivo (HIIT para emagrecimento, LISS para hipertrofia/recuperação)
+10. Para CADA exercício, sugira um peso ideal (campo "peso_sugerido"). Se houver histórico, baseie-se nas cargas anteriores com progressão de 5-10%. Se não houver histórico, sugira um peso conservador adequado ao nível do aluno. Formato: string (ex: "20kg", "12kg cada", "peso corporal", "30kg na máquina"). Para cardio use a intensidade (ex: "velocidade 6-8", "nível 5", "70% FCmáx")
+11. IMPORTANTE: TUDO que for recomendado deve estar na lista de exercícios do JSON - aquecimento, musculação, cardio, alongamento. Nada deve ficar apenas no texto descritivo
 
 FORMATO DE RESPOSTA:
 Primeiro, dê uma breve análise do histórico do aluno (se disponível) e como o novo plano evolui a partir dele.
@@ -793,7 +817,7 @@ Depois, para cada dia, liste os exercícios com suas dicas.
 No final, inclua orientações de progressão ao longo do mês.
 
 IMPORTANTE: No FINAL da resposta, inclua este bloco JSON numa linha só:
-%%SEMANA%%[{"dia":"Dia 1","nome":"Nome do Treino","grupo":"A","exercicios":[{"nome":"Exercício","series":3,"reps":12,"dica":"Dica técnica curta"}]}]%%FIM%%
+%%SEMANA%%[{"dia":"Dia 1","nome":"Nome do Treino","grupo":"A","exercicios":[{"nome":"Exercício","series":3,"reps":12,"dica":"Dica técnica curta","peso_sugerido":"20kg"}]}]%%FIM%%
 
 Grupos: A=Peito, B=Costas, C=Pernas, D=Ombros, E=Braços, F=Core, G=Full Body
 
@@ -891,7 +915,8 @@ function autoCreatePlan(dayData) {
       name: e.nome,
       sets: e.series || 3,
       reps: e.reps || 12,
-      dica: e.dica || ''
+      dica: e.dica || '',
+      pesoSugerido: e.peso_sugerido || ''
     })),
     createdAt: new Date().toISOString(),
     fromAI: true,
@@ -1053,7 +1078,18 @@ window.addEventListener('resize', () => {
 // ─── PWA ───
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      reg.addEventListener('updatefound', () => {
+        const newSW = reg.installing;
+        if (newSW) {
+          newSW.addEventListener('statechange', () => {
+            if (newSW.state === 'activated' && navigator.serviceWorker.controller) {
+              window.location.reload();
+            }
+          });
+        }
+      });
+    }).catch(() => {});
   });
 }
 

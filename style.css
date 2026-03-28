@@ -420,6 +420,23 @@ textarea { resize: vertical; min-height: 60px; font-size: 15px; }
   background: var(--surface); padding: 2px 8px; border-radius: 4px;
   margin-left: 8px;
 }
+.set-card-peso-sug {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  background: rgba(99, 102, 241, 0.12); padding: 2px 8px; border-radius: 4px;
+  margin-left: 4px;
+}
+.set-card-dica {
+  font-size: 12px; color: var(--muted); font-style: italic;
+  padding: 4px 14px 8px; line-height: 1.4;
+}
+.btn-yt {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(255, 0, 0, 0.15); color: #ff4444;
+  font-size: 10px; text-decoration: none; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.btn-yt:active { background: rgba(255, 0, 0, 0.3); }
 .set-row {
   display: grid; grid-template-columns: 28px 1fr 1fr 44px;
   gap: 8px; align-items: center; padding: 8px 14px;
@@ -463,12 +480,21 @@ textarea { resize: vertical; min-height: 60px; font-size: 15px; }
 .plan-card-body.open { display: block; }
 
 .ex-item {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; flex-direction: column; gap: 2px;
   padding: 10px 0; border-bottom: 1px solid var(--border);
 }
 .ex-item:last-child { border-bottom: none; }
+.ex-item-top { display: flex; align-items: center; gap: 8px; width: 100%; }
 .ex-item-name { flex: 1; font-size: 15px; }
 .ex-item-meta { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
+.ex-item-peso {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  background: rgba(99, 102, 241, 0.12); padding: 2px 8px; border-radius: 4px;
+}
+.ex-item-dica {
+  font-size: 12px; color: var(--muted); font-style: italic;
+  padding-left: 2px; line-height: 1.4;
+}
 
 /* ─── EXERCISE ADD ROW ─── */
 .ex-add-row {
