@@ -196,7 +196,7 @@ function loadSessPlan() {
       ? `<span class="set-card-peso-sug">Sugerido: ${esc(ex.pesoSugerido)}</span>` : '';
     const dicaHtml = ex.dica
       ? `<div class="set-card-dica">💡 ${esc(ex.dica)}</div>` : '';
-    const ytQuery = encodeURIComponent('como fazer ' + ex.name + ' exercício academia');
+    const ytQuery = encodeURIComponent(ex.name);
     const ytBtn = `<a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" rel="noopener" class="btn-yt" title="Ver exercício no YouTube">▶</a>`;
 
     return `<div class="set-card">
@@ -357,7 +357,7 @@ function renderPlanos() {
       </div>
       <div class="plan-card-body" id="pcb-${p.id}">
         ${p.exercises.map(e => {
-          const ytQ = encodeURIComponent('como fazer ' + e.name + ' exercício academia');
+          const ytQ = encodeURIComponent(e.name);
           const pesoTag = e.pesoSugerido ? `<span class="ex-item-peso">${esc(e.pesoSugerido)}</span>` : '';
           const dicaTag = e.dica ? `<div class="ex-item-dica">💡 ${esc(e.dica)}</div>` : '';
           return `<div class="ex-item">
