@@ -45,7 +45,10 @@
 
   <!-- ══════════ HOME ══════════ -->
   <div class="screen active" id="s-home">
-    <div class="page-title" id="home-greeting">BOM DIA,<br>VAMOS TREINAR?</div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+      <div class="page-title" id="home-greeting">BOM DIA,<br>VAMOS TREINAR?</div>
+      <button class="btn btn-icon btn-settings" onclick="openSheet('sheet-settings')" aria-label="Configurações">⚙️</button>
+    </div>
 
     <div class="stats-row">
       <div class="stat-box">
@@ -430,6 +433,41 @@
     </div>
     <div class="sheet-footer">
       <button class="btn btn-ghost" onclick="closeSheet('sheet-install')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETTINGS ═══ -->
+<div class="overlay" id="sheet-settings" onclick="overlayClick(event,'sheet-settings')" role="dialog" aria-label="Configurações">
+  <div class="sheet">
+    <div class="sheet-header">
+      <span class="sheet-title">⚙️ CONFIGURAÇÕES</span>
+      <button class="btn btn-icon btn-sm" onclick="closeSheet('sheet-settings')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="sheet-body">
+
+      <div class="card glass-card" style="margin-bottom:16px;">
+        <div class="section-label" style="margin-bottom:8px;">Chave de API (Anthropic)</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="password" id="settings-apikey" placeholder="sk-ant-..." autocomplete="off" style="flex:1;" class="field-input">
+          <button class="btn btn-icon btn-sm" onclick="toggleSettingsKey()" id="settings-eye" aria-label="Mostrar/esconder chave">👁</button>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveSettingsKey()" style="margin-top:10px;width:100%;">Salvar chave</button>
+      </div>
+
+      <div class="card glass-card" style="margin-bottom:16px;">
+        <div class="section-label" style="margin-bottom:8px;">Dados</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm btn-icon-text" onclick="exportData()" style="flex:1;">📤 Exportar backup</button>
+          <label class="btn btn-ghost btn-sm btn-icon-text" style="flex:1;text-align:center;cursor:pointer;">📥 Importar<input type="file" accept=".json" onchange="importData(event)" hidden></label>
+        </div>
+      </div>
+
+      <div class="card glass-card">
+        <div class="section-label" style="margin-bottom:8px;">Sobre</div>
+        <p style="font-size:13px;color:var(--muted);margin:0;">IronLog v2.1 — Seu personal trainer de bolso.<br>Dados armazenados localmente no dispositivo.</p>
+      </div>
+
     </div>
   </div>
 </div>

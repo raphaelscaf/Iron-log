@@ -46,6 +46,7 @@ function openSheet(id, ...args) {
   if (id === 'sheet-new-session') initNewSession();
   if (id === 'sheet-plan-edit') initPlanEdit(args[0]);
   if (id === 'sheet-ai') initAi();
+  if (id === 'sheet-settings') initSettings();
 }
 
 function closeSheet(id) {
@@ -673,6 +674,39 @@ function saveApiKey() {
   if (!k.startsWith('sk-ant-')) { toast('Chave inválida!'); return; }
   DB.apiKey = k;
   initAi();
+}
+
+// ─── SETTINGS ───
+function initSettings() {
+  const input = document.getElementById('settings-apikey');
+  const key = DB.apiKey;
+  input.value = key;
+  input.type = 'password';
+  document.getElementById('settings-eye').textContent = '👁';
+}
+
+function toggleSettingsKey() {
+  const input = document.getElementById('settings-apikey');
+  const btn = document.getElementById('settings-eye');
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+function saveSettingsKey() {
+  const k = document.getElementById('settings-apikey').value.trim();
+  if (!k) {
+    DB.apiKey = '';
+    toast('Chave removida.');
+    return;
+  }
+  if (!k.startsWith('sk-ant-')) { toast('Chave inválida! Deve começar com sk-ant-'); return; }
+  DB.apiKey = k;
+  toast('Chave salva!');
 }
 
 function selectChip(el) {

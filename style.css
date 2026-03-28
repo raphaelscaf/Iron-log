@@ -745,6 +745,18 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 #ai-replace:checked + span { background: var(--accent) !important; }
 #ai-replace:checked ~ #ai-replace-knob { left: 22px !important; }
 
+/* ─── SETTINGS ─── */
+.btn-settings {
+  font-size: 20px; margin-top: 4px; opacity: 0.6;
+  background: none; border: none; padding: 4px;
+}
+.btn-settings:active { opacity: 1; }
+.field-input {
+  width: 100%; padding: 10px 12px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); font-size: 14px;
+}
+
 /* ─── ANIMATIONS ─── */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .fade-in { animation: fadeIn 0.3s ease; }
